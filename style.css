@@ -1,0 +1,291 @@
+/* style.css */
+@import url('https://fonts.googleapis.com/css2?family=Dela+Gothic+One&display=swap');
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Comic Sans MS', 'Impact', sans-serif;
+}
+
+/* 修改 body 的設定 */
+body {
+    background-color: #1a1a1a;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+    /* 修正：完美填滿行動裝置（包含 iOS 的動態高度與安全區域） */
+    width: 100vw;
+    height: 100vh;
+    height: -webkit-fill-available; 
+    overflow: hidden;
+    
+    /* 確保內容不會被 iPhone 的安全區域（如瀏海）硬生生切掉，改由 padding 彈性內縮 */
+    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+}
+
+/* 升級：iPhone 17 橫式容器 (響應式滿版) */
+.phone-container {
+    /* 舊的固定尺寸：width: 935px; height: 430px; 刪掉或註冊掉 */
+    
+    /* 新的響應式尺寸：預設撐滿，但最大不超過原本的 935x430 */
+    width: 100%;
+    height: 100%;
+    max-width: 935px;
+    max-height: 430px;
+    
+    /* 保持你的辣妹風格背景 */
+    background: url('./images/bg.png') center/cover no-repeat;
+    
+    border: 8px solid #000;
+    border-radius: 40px;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    box-shadow: 0 0 30px rgba(255, 0, 127, 0.6);
+    
+    /* 修正：確保在極端螢幕比例下內容也能完整呈現 */
+    box-sizing: border-box;
+}
+
+
+/* 辣妹字體風格 */
+.gal-title {
+    font-size: 2.5rem;
+    color: #ffff00;
+    text-shadow: 3px 3px 0px #ff007f, -3px -3px 0px #000;
+    text-transform: uppercase;
+    font-weight: bold;
+    letter-spacing: 2px;
+    animation: flash 1s infinite alternate;
+}
+
+/* 👑 專屬：YBSG 辣妹極粗大字體 */
+.ybsg-gal-heavy {
+    font-size: 3.5rem;    /* 尺寸拉大到 3.5rem，絕對比標題還要震撼醒目 */
+    font-weight: 900;     /* 字體調到最粗 */
+    text-align: center;   /* 文字內容置中 */
+    color: #fff;          /* 字體本體用純白，內發光效果最好 */
+    margin: 20px 0;       /* 上下保留一點呼吸空間 */
+    
+    /* 1. 已更換為日系可愛極粗字體 */
+    font-family: 'Dela Gothic One', sans-serif;
+    
+    /* 2. 靈魂核心：多重文字陰影 (Text Shadow) */
+    /* 前四行用純黑 (#000) 往四個角落延伸 3 像素，拼出「超完美的文字黑邊粗外框」 */
+    /* 後三行用桃紅與粉紅，做出經典的「辣妹霓虹大發光」 */
+    text-shadow: 
+        -3px -3px 0 #000,  
+         3px -3px 0 #000, 
+        -3px  3px 0 #000,  
+         3px  3px 0 #000, 
+        0 0 15px #ef54ac, 
+        0 0 25px #ef0e8e, 
+        0 0 35px #f579bf;
+        
+    /* 3. 辣妹小巧思：讓字體微微傾斜 1 度，增加拍貼機塗鴉（落書き）的俏皮隨性視覺感 */
+    transform: rotate(-1deg);
+    display: inline-block;
+    width: 100%; /* 確保傾斜時依然完美居中 */
+}
+
+/* 霓虹閃爍按鈕 */
+.gal-btn {
+    background: #ffff00;
+    color: #000;
+    font-size: 1.5rem;
+    font-weight: bold;
+    padding: 10px 30px;
+    border: 4px solid #000;
+    border-radius: 20px;
+    cursor: pointer;
+    box-shadow: 4px 4px 0px #ff007f;
+    transition: transform 0.1s, box-shadow 0.1s;
+    text-decoration: none;
+    text-align: center;
+}
+
+.gal-btn:active {
+    transform: translate(4px, 4px);
+    box-shadow: 0px 0px 0px #ff007f;
+}
+
+/* 閃爍動畫 */
+@keyframes flash {
+    0% { filter: drop-shadow(0 0 5px #fff); }
+    100% { filter: drop-shadow(0 0 15px #ff007f); }
+}
+
+/* 主內容區域 */
+.content-area {
+    width: 100%;
+    height: 75%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+}
+
+/* 外框選擇排版 */
+.frame-option {
+    width: 240px;
+    height: 150px;
+    border: 4px dashed #fff;
+    cursor: pointer;
+    background: rgba(255, 255, 255, 0.2);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #fff;
+    border-radius: 10px;
+    font-weight: bold;
+    font-size: 1.1rem;
+    overflow: hidden;
+    transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+}
+
+/* 外框選擇 Hover 特效：加上霓虹發光效果 */
+.frame-option:hover {
+    border-color: #ffff00;
+    transform: scale(1.05);
+    box-shadow: 0 0 15px #ffff00, 0 0 25px #ff007f;
+}
+
+.frame-option img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* 相機與相片工作區 */
+.photo-workspace {
+    position: relative;
+    width: 400px;
+    height: 250px;
+    background: #000;
+    border: 4px solid #fff;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+#video, #captured-img, #result-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: brightness(1.25) contrast(1.05) saturate(1.12) hue-rotate(-6deg);
+}
+
+#video {
+    transform: scaleX(-1);
+}
+
+/* 疊加的外框 */
+.frame-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    object-fit: cover;
+}
+
+/* 貼圖工具箱選單 */
+.sticker-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background: rgba(243, 101, 186, 0.758);
+    padding: 10px;
+    border-radius: 10px;
+    height: 100%;
+    overflow-y: auto;
+}
+
+.sticker-item {
+    width: 50px;
+    height: 50px;
+    cursor: pointer;
+    border: 2px solid transparent;
+    background: rgba(193, 193, 193, 0.47);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #fff;
+    object-fit: contain;
+    transition: transform 0.2s ease;
+}
+
+.sticker-item:hover {
+    border-color: #ffff00;
+    transform: scale(1.1) rotate(3deg);
+}
+
+/* ✨ 可拖拽與縮放的貼圖功能外殼 */
+.draggable-sticker {
+    position: absolute;
+    width: 75px;        /* 初始生成的寬度 */
+    height: 75px;       /* 初始生成的高度 */
+    cursor: move;
+    touch-action: none;
+    user-select: none;
+    border: 2px dashed rgba(255, 0, 127, 0.5); /* 裝飾選取虛線框 */
+    padding: 4px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-sizing: border-box;
+}
+
+/* 確保外殼內部的貼紙圖片完美填滿、且不干擾滑鼠拖動 */
+.draggable-sticker img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    pointer-events: none; 
+}
+
+/* 📐 右下角的放大縮小控制點 */
+.resize-handle {
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    background-color: #ff007f; /* 經典辣妹桃紅控制點 */
+    border: 2px solid #fff;
+    border-radius: 50%;
+    bottom: -7px;
+    right: -7px;
+    cursor: se-resize; /* 雙向縮放箭頭游標 */
+    z-index: 10;
+}
+
+/* 🔄 新增：正上方的旋轉控制點把手 */
+.rotate-handle {
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    background-color: #ffff00; /* 辣妹螢光黃旋轉點 */
+    border: 2px solid #000;
+    border-radius: 50%;
+    top: -22px;               /* 移到外框上方空隙 */
+    left: 50%;
+    transform: translateX(-50%);
+    cursor: grab;
+    z-index: 10;
+}
+
+/* 旋轉點與框框中間的小小垂直連接線 */
+.rotate-handle::after {
+    content: "";
+    position: absolute;
+    width: 2px;
+    height: 10px;
+    background-color: rgba(255, 0, 127, 0.6);
+    bottom: -11px;
+    left: 50%;
+    transform: translateX(-50%);
+}
