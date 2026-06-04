@@ -7,48 +7,46 @@
     font-family: 'Comic Sans MS', 'Impact', sans-serif;
 }
 
-/* 修改 body 的設定 */
+/* 1. 讓 body 成為最底層的純黑，且不留任何縫隙 */
 body {
     background-color: #1a1a1a;
     display: flex;
     justify-content: center;
     align-items: center;
     
-    /* 修正：完美填滿行動裝置（包含 iOS 的動態高度與安全區域） */
+    /* 強制撐滿螢幕 */
     width: 100vw;
     height: 100vh;
     height: -webkit-fill-available; 
     overflow: hidden;
-    
-    /* 確保內容不會被 iPhone 的安全區域（如瀏海）硬生生切掉，改由 padding 彈性內縮 */
-    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+    margin: 0;
+    padding: 0;
 }
 
-/* 升級：iPhone 17 橫式容器 (響應式滿版) */
+/* 2. 徹底解放機台容器，強迫 100% 塞滿手機螢幕 */
 .phone-container {
-    /* 舊的固定尺寸：width: 935px; height: 430px; 刪掉或註冊掉 */
+    /* 💥 關鍵修改：強制拿掉 max-width 和 max-height 的限制 */
+    width: 100vw;
+    height: 100vh;
+    height: -webkit-fill-available;
     
-    /* 新的響應式尺寸：預設撐滿，但最大不超過原本的 935x430 */
-    width: 100%;
-    height: 100%;
-    max-width: 935px;
-    max-height: 430px;
+    /* 💥 關鍵修改：拿掉原本模擬手機殼的黑色粗邊框與圓角，讓它變成真正的滿版畫面 */
+    border: none;
+    border-radius: 0px;
+    box-shadow: none;
     
-    /* 保持你的辣妹風格背景 */
+    /* 保持背景圖片滿版 */
     background: url('./images/bg.png') center/cover no-repeat;
     
-    border: 8px solid #000;
-    border-radius: 40px;
     position: relative;
     overflow: hidden;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     align-items: center;
-    padding: 20px;
-    box-shadow: 0 0 30px rgba(255, 0, 127, 0.6);
     
-    /* 修正：確保在極端螢幕比例下內容也能完整呈現 */
+    /* 使用 iOS 安全區域內縮，確保按鈕跟文字不會被瀏海或動態島遮到 */
+    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
     box-sizing: border-box;
 }
 
