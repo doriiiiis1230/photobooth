@@ -7,6 +7,15 @@
     font-family: 'Comic Sans MS', 'Impact', sans-serif;
 }
 
+html {
+    width: 100%;
+    height: 100%;
+    /* 💥 關鍵：同步讓 html 也有填滿高度的底子 */
+    height: -webkit-fill-available; 
+    margin: 0;
+    padding: 0;
+}
+
 /* 1. 讓 body 成為最底層的純黑，且不留任何縫隙 */
 body {
     background-color: #1a1a1a;
@@ -28,7 +37,7 @@ body {
     /* 💥 關鍵修改：強制拿掉 max-width 和 max-height 的限制 */
     background-color: #000;
     width: 100vw;
-    height: 100vh;
+    height: inherit;
     height: -webkit-fill-available;
     
     /* 💥 關鍵修改：拿掉原本模擬手機殼的黑色粗邊框與圓角，讓它變成真正的滿版畫面 */
