@@ -55,7 +55,7 @@ async function initCameraPage() {
         const ctx = canvas.getContext("2d");
 
         // 設定濾鏡效果
-        ctx.filter = "brightness(1.25) contrast(1.05) saturate(1.12) hue-rotate(-6deg)";
+        ctx.filter = "brightness(1.4) contrast(1.05) saturate(1.2) hue-rotate(-8deg)";
         
         // ✨ 新增與修改：利用矩陣翻轉 Canvas，實現鏡像相片擷取
         ctx.save();                           // 儲存目前畫布狀態
