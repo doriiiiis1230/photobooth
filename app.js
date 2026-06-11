@@ -49,36 +49,35 @@ async function initCameraPage() {
     }
 
     captureBtn.addEventListener("click", () => {
-        // 1. 創建主要畫布（最後輸出的畫布）
         const canvas = document.createElement("canvas");
         canvas.width = 640;
         canvas.height = 360;
         const ctx = canvas.getContext("2d");
 
-        // 2. 🔥【手機版相容性關鍵】創建一個暫時的隱藏畫布，先捕捉純粹、未經濾鏡的視訊畫面
+        // 🔥【解決核心 Bug：中介畫布黑魔法】
+        // 先創建一個隱藏的暫時畫布，將這一格的視訊直接畫下來變為「靜態圖檔」
         const tempCanvas = document.createElement("canvas");
         tempCanvas.width = 640;
         tempCanvas.height = 360;
         const tempCtx = tempCanvas.getContext("2d");
         tempCtx.drawImage(video, 0, 0, tempCanvas.width, tempCanvas.height);
 
-        // 3. 在主要畫布上設定你想烘焙進去的辣妹濾鏡配方
-        ctx.filter = "brightness(1.18) contrast(1.05) saturate(1.12) hue-rotate(-8deg)";
+        // 1. 在主畫布上設定你想烤進相片中的濾鏡參數
+        ctx.filter = "brightness(1.18) contrast(1.05) saturate(1.12) hue-rotate(-6deg)";
         
-        // 4. 🪞 結合鏡像處理：將這個暫時畫布（已被視為靜態圖）反轉並濾鏡化繪製到主畫布上
-        ctx.save();                           // 儲存畫布狀態
-        ctx.translate(canvas.width, 0);       // 移至右側
-        ctx.scale(-1, 1);                     // 水平翻轉
+        // 2. 🪞【融合鏡像自拍】進行左右翻轉矩陣變換
+        ctx.save();                           // 儲存目前畫布狀態
+        ctx.translate(canvas.width, 0);       // 將畫布原點移至右側
+        ctx.scale(-1, 1);                     // 水平翻轉畫布
         
-        // 💡 關鍵：改為繪製 tempCanvas 而非 video，手機就能完美吃得到 ctx.filter 濾鏡了！
+        // 3. 💡 關鍵：改為繪製 tempCanvas（靜態快照）而非 video！這樣所有手機、電腦就都能完美吃得到濾鏡了！
         ctx.drawImage(tempCanvas, 0, 0, canvas.width, canvas.height); 
-        ctx.restore();                        // 恢復畫布狀態
+        ctx.restore();                        // 恢復畫布狀態（以免影響後續外框疊加）
         
-        // 關閉主要畫布的濾鏡，確保接下來疊加的「外框」保持原本漂亮的顏色不被變色
+        // 4. 關閉主畫布濾鏡，確保後面疊加進來的「相框」保持精準原色，不被濾鏡變色
         ctx.filter = "none";
         
-        // --- 以下原本載入外框並合成跳頁的邏輯完全不用變 ---
-        const selectedFrame = localStorage.getItem("selectedFrame") || "images/frame1.png";
+        // --- 後續載入外框並跳頁的邏輯不變 ---
         const frameImg = new Image();
         if (selectedFrame.startsWith('http')) {
             frameImg.crossOrigin = "anonymous"; 
