@@ -54,30 +54,70 @@ async function initCameraPage() {
         canvas.height = 360;
         const ctx = canvas.getContext("2d");
 
-        // 🔥【解決核心 Bug：中介畫布黑魔法】
-        // 先創建一個隱藏的暫時畫布，將這一格的視訊直接畫下來變為「靜態圖檔」
-        const tempCanvas = document.createElement("canvas");
-        tempCanvas.width = 640;
-        tempCanvas.height = 360;
-        const tempCtx = tempCanvas.getContext("2d");
-        tempCtx.drawImage(video, 0, 0, tempCanvas.width, tempCanvas.height);
+        // 1. 🪞 鏡像翻轉：將視訊畫面水平反轉畫入主畫布中（與畫面預覽保持一致）
+        ctx.save();
+        ctx.translate(canvas.width, 0);
+        ctx.scale(-1, 1);
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+        ctx.restore();
 
-        // 1. 在主畫布上設定你想烤進相片中的濾鏡參數
-        ctx.filter = "brightness(1.18) contrast(1.05) saturate(1.12) hue-rotate(-6deg)";
+        // 2. 🔥【跨平台終極濾鏡烘焙】取出像素，手動套用：brightness(1.4) contrast(1.05) saturate(1.2) hue-rotate(-8deg)
+        const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        const data = imgData.data;
+
+        // 預先計算 hue-rotate (-8度) 的色彩旋轉矩陣參數
+        const angle = -8 * Math.PI / 180;
+        const c = Math.cos(angle);
+        const s = Math.sin(angle);
         
-        // 2. 🪞【融合鏡像自拍】進行左右翻轉矩陣變換
-        ctx.save();                           // 儲存目前畫布狀態
-        ctx.translate(canvas.width, 0);       // 將畫布原點移至右側
-        ctx.scale(-1, 1);                     // 水平翻轉畫布
+        const r1 = 0.213 + 0.787 * c - 0.213 * s;
+        const g1 = 0.715 - 0.715 * c - 0.715 * s;
+        const b1 = 0.072 - 0.072 * c + 0.928 * s;
+
+        const r2 = 0.213 - 0.213 * c + 0.143 * s;
+        const g2 = 0.715 + 0.285 * c + 0.140 * s;
+        const b2 = 0.072 - 0.072 * c - 0.283 * s;
+
+        const r3 = 0.213 - 0.213 * c - 0.787 * s;
+        const g3 = 0.715 - 0.715 * c + 0.715 * s;
+        const b3 = 0.072 + 0.928 * c + 0.072 * s;
+
+        for (let i = 0; i < data.length; i += 4) {
+            let r = data[i];
+            let g = data[i + 1];
+            let b = data[i + 2];
+
+            // A. 亮度提升 (Brightness: 1.4)
+            r *= 1.4;
+            g *= 1.4;
+            b *= 1.4;
+
+            // B. 對比度增強 (Contrast: 1.05)
+            r = (r - 128) * 1.05 + 128;
+            g = (g - 128) * 1.05 + 128;
+            b = (b - 128) * 1.05 + 128;
+
+            // C. 飽和度調整 (Saturate: 1.2)
+            const gray = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+            r = gray + (r - gray) * 1.2;
+            g = gray + (g - gray) * 1.2;
+            b = gray + (b - gray) * 1.2;
+
+            // D. 色相旋轉 (Hue Rotate: -8deg) 矩陣變換
+            const rx = r * r1 + g * g1 + b * b1;
+            const gx = r * r2 + g * g2 + b * b2;
+            const bx = r * r3 + g * g3 + b * b3;
+
+            // 安全防爆限制：確保數值維持在 0 ~ 255 的合法區間
+            data[i]     = Math.min(255, Math.max(0, rx));
+            data[i + 1] = Math.min(255, Math.max(0, gx));
+            data[i + 2] = Math.min(255, Math.max(0, bx));
+        }
         
-        // 3. 💡 關鍵：改為繪製 tempCanvas（靜態快照）而非 video！這樣所有手機、電腦就都能完美吃得到濾鏡了！
-        ctx.drawImage(tempCanvas, 0, 0, canvas.width, canvas.height); 
-        ctx.restore();                        // 恢復畫布狀態（以免影響後續外框疊加）
+        // 將處理完畢的完美濾鏡像素資料放回 Canvas
+        ctx.putImageData(imgData, 0, 0);
         
-        // 4. 關閉主畫布濾鏡，確保後面疊加進來的「相框」保持精準原色，不被濾鏡變色
-        ctx.filter = "none";
-        
-        // --- 後續載入外框並跳頁的邏輯不變 ---
+        // 3. 疊加拍貼相框（外框不會受到任何像素運算的影響，保持精準原色）
         const frameImg = new Image();
         if (selectedFrame.startsWith('http')) {
             frameImg.crossOrigin = "anonymous"; 
@@ -104,7 +144,6 @@ async function initCameraPage() {
         };
     });
 }
-
 // 4. 裝飾頁邏輯
 function initDecoratePage() {
     const workspace = document.getElementById("workspace");
