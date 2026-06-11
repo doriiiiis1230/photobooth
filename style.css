@@ -180,16 +180,15 @@ body {
     overflow: hidden;
 }
 
-/* ✨ 修正：僅讓相機視訊畫面擁有即時預覽濾鏡與左右鏡像 */
 #video {
     width: 100%;
     height: 100%;
     object-fit: cover;
     filter: brightness(1.4) contrast(1.05) saturate(1.2) hue-rotate(-8deg);
-    transform: scaleX(-1); /* 鏡像自拍 */
+    transform: scaleX(-1); 
 }
 
-/* ✨ 修正：已經拍好的照片與成果圖是純資料，不需要再被 CSS 二次變色 */
+/* 裝飾頁與儲存頁不需要 CSS 濾鏡，因為照片像素已經被 JS 永久改變了 */
 #captured-img, #result-img {
     width: 100%;
     height: 100%;
